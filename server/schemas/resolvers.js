@@ -1,7 +1,7 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { User, Book } = require('../models');
 const { signToken } = require('../utils/auth');
-import { GraphQLError } from 'graphql';
+const { GraphQLError } = require('graphql');
 
 const resolvers = {
   Query: {
@@ -19,14 +19,14 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    login: async (parent, { body }) => {
-      const user = await User.findOne({ $or: [{ username: body.username }, { email: body.email }] });
+    login: async (parent, { username, email, password }) => {
+      const user = await User.findOne({ $or: [{ username: username }, { email: email }] });
 
       if (!user) {
         throw new AuthenticationError("Can't find this user");
       }
 
-      const correctPw = await user.isCorrectPassword(body.password);
+      const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
         throw new AuthenticationError('Wrong password!');
@@ -36,12 +36,12 @@ const resolvers = {
 
       return { token, user };
     },
-    saveBook: async (parent, { body }, context) => {
+    saveBook: async (parent, { authors, description, title, bookId, image, link }, context) => {
       if (context.user) {
         try {
           const updatedUser = await User.findOneAndUpdate(
             { _id: context.user._id },
-            { $addToSet: { savedBooks: body } },
+            { $addToSet: { savedBooks: { authors, description, title, bookId, image, link } } },
             { new: true, runValidators: true }
           );
         } catch (err) {

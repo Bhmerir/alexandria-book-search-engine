@@ -6,7 +6,7 @@ const typeDefs = gql`
     username: String
     email: String
     bookCount: Int
-    saveBooks: [Book]
+    savedBooks: [Book]
   }
 
   type Book {
@@ -32,6 +32,7 @@ const typeDefs = gql`
     login(username: String, email: String, password: String!): Auth
     saveBook(authors: [String]!, description: String!, title: String!, bookId: String!, image: String!, link: String!): User
     removeBook(bookId: String!): User
+  }
 `;
 
 module.exports = typeDefs;
