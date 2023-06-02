@@ -46,6 +46,7 @@ const resolvers = {
             { $addToSet: { savedBooks: { authors, description, title, bookId, image, link } } },
             { new: true, runValidators: true }
           );
+          return updatedUser
         } catch (err) {
           throw new GraphQLError(err);
         }
@@ -61,6 +62,7 @@ const resolvers = {
           { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
         );
+        return updatedUser
         if (!updatedUser) {
           throw new GraphQLError("Couldn't find user with this id!");
         }
