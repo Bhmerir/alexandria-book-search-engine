@@ -6,10 +6,8 @@ const { GraphQLError } = require('graphql');
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
-      console.log(context.user)
       if (context.user) {
         const foundUser = User.findOne({ _id: context.user._id }).populate('savedBooks');
-        console.log("foundUser",foundUser)
         return foundUser
       }
       throw new AuthenticationError('You need to be logged in!');
@@ -64,6 +62,7 @@ const resolvers = {
           { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
         );
+        console.log(updatedUser)
         return updatedUser
         if (!updatedUser) {
           throw new GraphQLError("Couldn't find user with this id!");
