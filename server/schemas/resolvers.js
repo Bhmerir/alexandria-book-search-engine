@@ -38,7 +38,7 @@ const resolvers = {
       return { token, user };
     },
     saveBook: async (parent, { authors, description, title, bookId, image, link }, context) => {
-      console.log("context.user",context.user)
+
       if (context.user) {
         try {
           const updatedUser = await User.findOneAndUpdate(
@@ -62,7 +62,7 @@ const resolvers = {
           { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
         );
-        console.log(updatedUser)
+
         return updatedUser
         if (!updatedUser) {
           throw new GraphQLError("Couldn't find user with this id!");
